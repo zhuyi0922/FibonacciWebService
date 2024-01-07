@@ -1,4 +1,11 @@
-FROM ubuntu:latest
-LABEL authors="86152"
+FROM node:16 as builder
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR '/app'
+EXPOSE 3000
+COPY package.json .
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+CMD ["npm","start"]

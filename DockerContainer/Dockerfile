@@ -1,12 +1,8 @@
+FROM openjdk:17
 
-FROM java:8
-FROM openjdk:11
-
-# 设置工作目录
 WORKDIR /app
+COPY OracleTest-1.0-SNAPSHOT.jar /app/Application.jar
+COPY webApp.yml /app/webApp.yml
 
-# 复制应用程序JAR文件到容器
-COPY target/your-application.jar /app/your-application.jar
-
-# 设置启动命令
-CMD ["java", "-jar", "your-application.jar", "server", "config.yml"]
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "Application.jar", "server", "webApp.yml"]
