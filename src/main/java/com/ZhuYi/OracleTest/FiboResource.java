@@ -6,6 +6,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("/fibonacci")
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,17 +32,20 @@ public class FiboResource {
             }
             for (int i = 2; i < n.intValue(); i++) {
                 dp[i] = dp[i - 1].add(dp[i - 2]);
+                if (i == 80){
+                    System.out.println(dp[i]);
+                }
             }
             return Arrays.asList(dp);
         }
         public static List<BigInteger> sortFibonacci(List<BigInteger> fibArray) {
             List<BigInteger> evenList = new ArrayList<>();
             List<BigInteger> oddList = new ArrayList<>();
-            for (int i = fibArray.size()-1; i >= 0; i--) {
-                if (fibArray.get(i).mod(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
-                    evenList.add(fibArray.get(i));
+            for (int j = fibArray.size()-1; j >= 0; j--) {
+                if (fibArray.get(j).mod(BigInteger.valueOf(2)).equals(BigInteger.ZERO)) {
+                    evenList.add(fibArray.get(j));
                 } else {
-                    oddList.add(fibArray.get(i));
+                    oddList.add(fibArray.get(j));
                 }
             }
 
@@ -55,15 +59,15 @@ public class FiboResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Timed
-    public Map<String, List<BigInteger>> calculateFibonacci(FibonacciInput input) {
+    public Map<String, List<String>> calculateFibonacci(FibonacciInput input) {
         BigInteger n = input.getN();
-        Map<String, List<BigInteger>> result = new HashMap<>();
+        Map<String, List<String>> result = new HashMap<>();
         List<BigInteger> fibArray = CalculateFibo.calculateFibo(n);
-        result.put("list", fibArray);
         if (fibArray == null) {
             return result;
         }
-        result.put("sorted", CalculateFibo.sortFibonacci(fibArray));
+        result.put("list", fibArray.stream().map(BigInteger::toString).collect(Collectors.toList()));
+        result.put("sorted", CalculateFibo.sortFibonacci(fibArray).stream().map(BigInteger::toString).collect(Collectors.toList()));
         return result;
     }
 }
